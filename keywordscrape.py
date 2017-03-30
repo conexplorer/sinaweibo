@@ -77,6 +77,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
             buseridlist = re.findall('<div><a class="nk" href="http://weibo.cn/(.*?)">', html)
             selector = etree.HTML(html)
             content = selector.xpath('//span[@class="ctt"]')
+            transponds = re.findall('>转发\[(.*?)\]</a>', html)
             for it in content:
                 datas.append(unicode(it.xpath('string(.)')).replace('http://', ''))
             useridlist = []
@@ -93,6 +94,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                 continue
             for it in datas:
                 userid = useridlist[datas.index(it)]
+                transpond = transponds[datas.index(it)]
                 userinfo = {}
                 userinfo = getuserinfo(userid=userid, headers=headers)
                 sub1 = re.compile("<.*?>")
@@ -103,7 +105,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                 it = sub3.sub('', it)
                 # f.write(it)
                 # f.write('\n')
-                post = {'cotent': it, 'time': starttime, 'userinfo': userinfo}
+                post = {'cotent': it, 'transponds': transpond, 'time': starttime, 'userinfo': userinfo}
                 cache.insert(post)
                 # f.write('this is a line')
                 # f.write('\n')
