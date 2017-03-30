@@ -15,6 +15,7 @@ from pymongo import MongoClient
 import keywordscrape
 
 
+
 def get_db():
     client = MongoClient('localhost', 27017)
     db =client.SinaWeiBoDB
@@ -22,12 +23,10 @@ def get_db():
 
 def main():
     db = get_db()
-    weiboaccounts = ['15176129257', '15085813840', '15737978387', '18101906736', '707986257', '13283719746', '13027739085', '1649098671@qq.com',
-                    'braveszhen@sina.com', '1032210054@qq.com', '18838975618', '15838129407', '13513712151', '15137882216']
-    weibopasswords = ['980120', '15085813840zxcvb', 'xiaobo', '910119cjy', 'z123456', '201314', 'ttt122903071002', 'fjjm04forever', '890815@szhen',
-                      '4705877756', '948511268', 'szld123', '7758521', 'ldiony42']
+    username = '13513712151'
+    password = '7758521'
     cookie = ''
-    cookie = cookieget.LoginWeibo()
+    cookie = cookieget.LoginWeibo(username=username, password=password)
     keywords = ['Cairns', '凯恩斯', 'Townsville', '汤斯维尔', 'Cooktown', '库克镇', 'Daintree', '戴恩树', 'Mission+Beach', '使命海滩', 'Rockhampton',
                 'Whitsunday+Islands', '圣灵岛', 'Hamilton+Island', '汉密尔顿岛', 'Lady+Musgrave+Island', 'Whitehaven+Beach', '白天堂沙滩',
                 'Airlie+Beach', '艾尔利海滩', 'Great+Barrier+Reef', '大堡礁', 'Coral', '珊瑚', 'Gold+Coast', '黄金海岸', 'Magnetic+Island', '磁岛',

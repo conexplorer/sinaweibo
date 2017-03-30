@@ -14,12 +14,9 @@ from selenium import webdriver
 import selenium.webdriver.support.ui as ui
 
 #获取cookie
-# username = '13513712151'
-# password = '7758521'
-username = '15137882216'
-password = 'ldiony42'
 
-def LoginWeibo():
+
+def LoginWeibo(username, password):
     N = 0
 
     driver = webdriver.Firefox()
