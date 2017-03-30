@@ -14,7 +14,7 @@ import cookieget
 from pymongo import MongoClient
 
 
-#关键词为大堡礁
+
 
 
 def getuserurl(userurl, headers):
