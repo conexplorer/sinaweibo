@@ -23,8 +23,8 @@ def get_db():
 
 def main():
     db = get_db()
-    username = '13513712151'
-    password = '7758521'
+    username = '15137882216'
+    password = 'ldiony42'
     cookie = ''
     cookie = cookieget.LoginWeibo(username=username, password=password)
     keywords = ['Cairns', '凯恩斯', 'Townsville', '汤斯维尔', 'Cooktown', '库克镇', 'Daintree', '戴恩树', 'Mission+Beach', '使命海滩', 'Rockhampton',

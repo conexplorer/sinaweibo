@@ -18,7 +18,6 @@ import selenium.webdriver.support.ui as ui
 
 def LoginWeibo(username, password):
     N = 0
-
     driver = webdriver.Firefox()
     wait = ui.WebDriverWait(driver, 10)
     cookies_dict = {}
