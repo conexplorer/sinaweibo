@@ -131,6 +131,7 @@ def get_comments(url, headers):
     for item in range(2, int(totalpage) + 1):
         url += str(item)
         print "    当前评论网页：", url
+		time.sleep(6)
         request = urllib2.Request(url, headers=headers)
         html = urllib2.urlopen(request).read()
         selector = etree.HTML(html)
