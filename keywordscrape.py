@@ -20,7 +20,7 @@ sys.setdefaultencoding('utf8')
 
 
 def get_userurl(userurl, headers):
-    time.sleep(6)
+    time.sleep(10)
     request = urllib2.Request(userurl, headers=headers)
     html = urllib2.urlopen(request).read()
     info = re.findall('私信</a>&nbsp;<a href="(.*?)">资料</a>', html)
@@ -28,14 +28,13 @@ def get_userurl(userurl, headers):
     return url
 
 def get_userinfo(userid, headers):
-    time.sleep(6)
     userurl = 'http://weibo.cn/' + userid
     if str.isalpha(userid[0]):
         userurl = get_userurl(userurl=userurl, headers=headers)
     else:
         userurl += '/info'
     print userurl
-
+    time.sleep(10)
     request = urllib2.Request(userurl, headers=headers)
     html = urllib2.urlopen(request).read()
 
@@ -49,6 +48,7 @@ def get_userinfo(userid, headers):
         userurl = 'http://weibo.cn/' + userid
         userurl = get_userurl(userurl=userurl, headers=headers)
         print userurl
+        time.sleep(10)
         request = urllib2.Request(userurl, headers=headers)
         html = urllib2.urlopen(request).read()
         username = re.findall('昵称:(.*?)<br/>', html)
@@ -111,10 +111,10 @@ def get_transpond_like_comment(html):
 
 
 def get_comments(url, headers):
-    time.sleep(6)
     datas = []
     url += str(1)
     print "    当前评论网页：", url
+    time.sleep(10)
     request = urllib2.Request(url, headers=headers)
     html = urllib2.urlopen(request).read()
     try:
@@ -131,7 +131,7 @@ def get_comments(url, headers):
     for item in range(2, int(totalpage) + 1):
         url += str(item)
         print "    当前评论网页：", url
-        time.sleep(6)
+        time.sleep(10)
         request = urllib2.Request(url, headers=headers)
         html = urllib2.urlopen(request).read()
         selector = etree.HTML(html)
