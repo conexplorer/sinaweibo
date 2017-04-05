@@ -20,7 +20,7 @@ sys.setdefaultencoding('utf8')
 
 
 def get_userurl(userurl, headers):
-    time.sleep(10)
+    time.sleep(6)
     request = urllib2.Request(userurl, headers=headers)
     html = urllib2.urlopen(request).read()
     info = re.findall('私信</a>&nbsp;<a href="(.*?)">资料</a>', html)
@@ -29,12 +29,13 @@ def get_userurl(userurl, headers):
 
 def get_userinfo(userid, headers):
     userurl = 'http://weibo.cn/' + userid
-    if str.isalpha(userid[0]):
-        userurl = get_userurl(userurl=userurl, headers=headers)
-    else:
+    match = re.findall('[a-zA-Z]', userid)
+    if not match:
         userurl += '/info'
+    else:
+        userurl = get_userurl(userurl=userurl, headers=headers)
     print userurl
-    time.sleep(10)
+    time.sleep(6)
     request = urllib2.Request(userurl, headers=headers)
     html = urllib2.urlopen(request).read()
 
@@ -48,7 +49,7 @@ def get_userinfo(userid, headers):
         userurl = 'http://weibo.cn/' + userid
         userurl = get_userurl(userurl=userurl, headers=headers)
         print userurl
-        time.sleep(10)
+        time.sleep(6)
         request = urllib2.Request(userurl, headers=headers)
         html = urllib2.urlopen(request).read()
         username = re.findall('昵称:(.*?)<br/>', html)
@@ -65,7 +66,7 @@ def get_userinfo(userid, headers):
         userbri.append('NONE')
 
     print username[0], usersex[0], userregion[0], userbri[0]
-    userinfo = {'name': username[0], 'gender': usersex[0], 'usrlocation': userregion[0], 'birthdate': userbri[0]}
+    userinfo = {'name': username[0], 'gender': usersex[0], 'region': userregion[0], 'birthdate': userbri[0]}
     return userinfo
 
 def get_text(html):
@@ -73,7 +74,7 @@ def get_text(html):
     selector = etree.HTML(html)
     content = selector.xpath('//span[@class="ctt"]')
     for it in content:
-        datas.append(unicode(it.xpath('string(.)')).replace('http://', ''))
+        datas.append(unicode(it.xpath('string(.)')))
     return datas
 
 def get_time(html, starttime):
@@ -83,13 +84,13 @@ def get_time(html, starttime):
     selector = etree.HTML(html)
     bbtime = selector.xpath('//span[@class="ct"]')
     for it in bbtime:
-        btimes.append(unicode(it.xpath('string(.)')).replace('http://', ''))
+        btimes.append(unicode(it.xpath('string(.)')))
     for it in btimes:
         if '分钟' in it:
             num = re.findall('\d+', it)[0]
             yes_time = now_time + datetime.timedelta(minutes=-int(num))
             yes_time = yes_time.strftime('%Y-%m-%d %H:%M')
-            print yes_time
+            times.append(yes_time)
         else:
             if '今天' in it:
                 rtime = starttime[0:4] + '-' + starttime[4:6] + '-' + starttime[-2:] + ' ' + it[3:8]
@@ -112,28 +113,23 @@ def get_transpond_like_comment(html):
 
 def get_comments(url, headers):
     datas = []
-    url += str(1)
-    print "    当前评论网页：", url
-    time.sleep(10)
-    request = urllib2.Request(url, headers=headers)
+    finallyurl = url + '1'
+    time.sleep(6)
+    request = urllib2.Request(finallyurl, headers=headers)
     html = urllib2.urlopen(request).read()
     try:
         totalpage = re.findall('<input name="mp" type="hidden" value="(.*?)" />', html)[0]
     except:
         totalpage = '1'
     print "    评论总页数：", totalpage
-    selector = etree.HTML(html)
-    content = selector.xpath('//span[@class="ctt"]')
-    for it in content:
-        if content.index(it) == 0:
-            continue
-        datas.append(unicode(it.xpath('string(.)')))
-    for item in range(2, int(totalpage) + 1):
-        url += str(item)
-        print "    当前评论网页：", url
-        time.sleep(10)
-        request = urllib2.Request(url, headers=headers)
-        html = urllib2.urlopen(request).read()
+
+    for item in range(1, int(totalpage) + 1):
+        if item != 1:
+            finallyurl = url + str(item)
+            time.sleep(10)
+            request = urllib2.Request(finallyurl, headers=headers)
+            html = urllib2.urlopen(request).read()
+        print "    当前评论网页：", finallyurl
         selector = etree.HTML(html)
         content = selector.xpath('//span[@class="ctt"]')
         for it in content:
@@ -165,31 +161,32 @@ def download(keyword, starttime, endtime, cookievalue, cache):
 
     preurl = "http://weibo.cn/search/mblog?hideSearchFrame=&keyword=" + keyword + '&advancedfilter=1&hasori=1&starttime=' + starttime + '&endtime=' + endtime + '&sort=time&page='
     data = []
-    trynum = 1
-    webpagenum = 0
-    while (1):
+
+    finallyurl = preurl + '1'
+    print '当前关键词为：' + keyword
+    time.sleep(6)
+    request = urllib2.Request(finallyurl, headers=headers)
+    html = urllib2.urlopen(request).read()
+    try:
+        totalpage = re.findall('<input name="mp" type="hidden" value="(.*?)" />', html)[0]
+    except:
+        totalpage = '1'
+    print "内容总页数：", totalpage
+    for webpagenum in range(1, int(totalpage)+1):
         try:
-            if trynum == 0:
-                break
-            time.sleep(6)
-            webpagenum += 1
-            finallyurl = preurl + str(webpagenum)
-            print '当前关键词为：' + keyword
             print "当前微博日期为:" + starttime + "   开始爬取第" + str(webpagenum) + "个网页："
+            if webpagenum != 1:
+                finallyurl = preurl + str(webpagenum)
+                time.sleep(6)
+                request = urllib2.Request(finallyurl, headers=headers)
+                html = urllib2.urlopen(request).read()
             print finallyurl
-
-            request = urllib2.Request(finallyurl, headers=headers)
-            html = urllib2.urlopen(request).read()
-
             datas = get_text(html=html)
             buseridlist = get_idlist(html=html)
             transponds, likes, comments_counts = get_transpond_like_comment(html=html)
             times = get_time(html=html, starttime=starttime)
             comments_urlist = get_comments_urllist(html=html)
             islocations = get_islocation(html=html)
-            if not datas:
-                trynum -= 1
-                continue
 
             useridlist = []
             for item in buseridlist:
@@ -199,6 +196,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                     useridlist.append(item)
             i = 0
             for text in datas:
+                print '第' + str(i+1) + '条微博：'
                 userid = useridlist[i]
                 transpond = transponds[i]
                 like = likes[i]
@@ -224,11 +222,10 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                 print "爬取完成"
                 i += 1
         except urllib2.HTTPError:
-            print "糟糕，账号被封！"
+            print "服务器拒绝访问！"
             exit()
         except:
             print "其他错误"
-            trynum -= 1
 
 
 def startscrape(cookie, db, keyword, starttime, endtime):

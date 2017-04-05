@@ -32,9 +32,18 @@ def main():
                 'Airlie+Beach', '艾尔利海滩', 'Great+Barrier+Reef', '大堡礁', 'Coral', '珊瑚', 'Gold+Coast', '黄金海岸', 'Magnetic+Island', '磁岛',
                 'Daydream+Island', '白日梦岛', 'Lady+Elliot+Island', '埃里奥特夫人岛', 'Heron+Island', 'Green+Island', '绿岛', 'Fitzroy+Island', '费兹罗岛']
     bday = 0
+    startup_time = datetime.datetime.now()
+    flag_time = datetime.datetime.now()
     while(1):
         now_time = datetime.datetime.now()
-        yes_time = now_time + datetime.timedelta(days=-bday)
+        if (now_time.day - flag_time.day) == 2:
+            flag_time = now_time + datetime.timedelta(days=-1)
+            flag_time = flag_time.strftime('%Y%m%d')
+            print "更新昨天的微博数据：", flag_time
+            for keyword in keywords:
+                keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=flag_time, endtime=yes_time)
+
+        yes_time = startup_time + datetime.timedelta(days=-bday)
         yes_time = yes_time.strftime('%Y%m%d')
         starttime = endtime = yes_time
 
