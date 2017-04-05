@@ -65,7 +65,7 @@ def get_userinfo(userid, headers):
         userbri.append('NONE')
 
     print username[0], usersex[0], userregion[0], userbri[0]
-    userinfo = {'name': username[0], 'gender': usersex[0], 'location': userregion[0], 'birthdate': userbri[0]}
+    userinfo = {'name': username[0], 'gender': usersex[0], 'usrlocation': userregion[0], 'birthdate': userbri[0]}
     return userinfo
 
 def get_text(html):
