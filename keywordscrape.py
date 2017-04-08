@@ -148,7 +148,6 @@ def get_islocation(html):
     locations = []
     selector = etree.HTML(html)
     location = selector.xpath('//div[@class="c"]/div/a[1]')
-
     for it in location:
         locations.append(unicode(it.xpath('string(.)')))
     return locations
@@ -209,7 +208,8 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                     print "    评论爬取完成"
                 else:
                     comments = 'NONE'
-
+                for loc in islocations:
+                    print loc
                 if islocations[i] == '显示地图':
                     location = text.split(' ')[-2]
                 else:
