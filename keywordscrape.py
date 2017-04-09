@@ -146,10 +146,24 @@ def get_comments_urllist(html):
 
 def get_islocation(html):
     locations = []
+    aa = []
+    bb = []
     selector = etree.HTML(html)
-    location = selector.xpath('//div[@class="c"]/div/a[1]')
-    for it in location:
-        locations.append(unicode(it.xpath('string(.)')))
+    b = selector.xpath('//div[@class="c"]/div[1]')
+    for it in b:
+        bb.append(unicode(it.xpath('string(.)')))
+
+    a = selector.xpath('//span[@class="ctt"]')
+    for it in a:
+        aa.append(unicode(it.xpath('string(.)')))
+    for i in range(0, 10):
+        try:
+            if (bb[i].split(' ​ ')[1][0] == '显'):
+                locations.append(aa[i].split(' ')[-2])
+            else:
+                locations.append('NONE')
+        except:
+            locations.append('NONE')
     return locations
 
 
@@ -185,7 +199,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
             transponds, likes, comments_counts = get_transpond_like_comment(html=html)
             times = get_time(html=html, starttime=starttime)
             comments_urlist = get_comments_urllist(html=html)
-            islocations = get_islocation(html=html)
+            locations = get_islocation(html=html)
 
             useridlist = []
             for item in buseridlist:
@@ -201,6 +215,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                 like = likes[i]
                 comments_count = comments_counts[i]
                 time1 = times[i]
+                location = locations[i]
                 userinfo = get_userinfo(userid=userid, headers=headers)
                 if comments_count != '0':
                     print "    开始爬取评论"
@@ -208,12 +223,12 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                     print "    评论爬取完成"
                 else:
                     comments = 'NONE'
-                for loc in islocations:
-                    print loc
-                if islocations[i] == '显示地图':
-                    location = text.split(' ')[-2]
-                else:
-                    location = 'NONE'
+                # for loc in islocations:
+                #     print loc
+                # if islocations[i] == '显示地图':
+                #     location = text.split(' ')[-2]
+                # else:
+                #     location = 'NONE'
                 try:
                     post = {'text': text, 'reposts_count': transpond, 'likes_count': like, 'comments_count': comments_count, 'comments': comments, 'location': location, 'date': time1, 'userinfo': userinfo}
                     cache.insert(post)
