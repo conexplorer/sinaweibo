@@ -69,12 +69,29 @@ def get_userinfo(userid, headers):
     userinfo = {'name': username[0], 'gender': usersex[0], 'region': userregion[0], 'birthdate': userbri[0]}
     return userinfo
 
-def get_text(html):
+def get_text(html, headers):
+    fulltexturl = re.findall('<a href=\'/comment/(.*?)\'>全文', html)
     datas = []
     selector = etree.HTML(html)
     content = selector.xpath('//span[@class="ctt"]')
+    fulltextnum = 0
+    bb = []
+    b = selector.xpath('//div[@class="c"]/div[1]')
+    for it in b:
+        bb.append(unicode(it.xpath('string(.)')))
+    i = 0
     for it in content:
-        datas.append(unicode(it.xpath('string(.)')))
+        try:
+            str = bb[i].split(' ​ ')[1][0]
+        except:
+            str = 'no'
+        if (str == '全'):
+            fulltext = get_fulltext(url=fulltexturl[fulltextnum], function='fulltext', headers=headers)
+            fulltextnum += 1
+            datas.append(fulltext)
+        else:
+            datas.append(unicode(it.xpath('string(.)')))
+        i += 1
     return datas
 
 def get_time(html, starttime):
@@ -144,7 +161,9 @@ def get_comments_urllist(html):
     return comments_urllist
 
 
-def get_islocation(html):
+def get_islocation(html, headers):
+    fulltexturl = re.findall('<a href=\'/comment/(.*?)\'>全文', html)
+    fulltextnum = 0
     locations = []
     aa = []
     bb = []
@@ -159,12 +178,40 @@ def get_islocation(html):
     for i in range(0, 10):
         try:
             if (bb[i].split(' ​ ')[1][0] == '显'):
-                locations.append(aa[i].split(' ')[-2])
+                if (bb[i].split(' ​ ')[1][0] == '全'):
+                    fulltext = get_fulltext(url=fulltexturl[fulltextnum], function='location', headers=headers)
+                    fulltextnum += 1
+                    locations.append(fulltext)
+                else:
+                    locations.append(aa[i].split(' ')[-2])
             else:
-                locations.append('NONE')
+                    locations.append('NONE')
         except:
             locations.append('NONE')
     return locations
+
+def get_fulltext(url, function, headers):
+    finallyurl = 'https://weibo.cn/comment/' + url
+
+    time.sleep(6)
+    request = urllib2.Request(finallyurl, headers=headers)
+    html = urllib2.urlopen(request).read()
+    selector = etree.HTML(html)
+    aa = []
+    bb = []
+    if (function == 'fulltext'):
+        a = selector.xpath('//div[@class="c"]/div[1]/span')
+        for it in a:
+            aa.append(unicode(it.xpath('string(.)')))
+        return aa[0]
+    else:
+        b = selector.xpath('//div[@class="c"]/div[1]/span/a')
+        for it in b:
+            bb.append(unicode(it.xpath('string(.)')))
+        return bb[0]
+
+
+
 
 
 def download(keyword, starttime, endtime, cookievalue, cache):
@@ -194,12 +241,12 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                 request = urllib2.Request(finallyurl, headers=headers)
                 html = urllib2.urlopen(request).read()
             print finallyurl
-            datas = get_text(html=html)
+            datas = get_text(html=html, headers=headers)
             buseridlist = get_idlist(html=html)
             transponds, likes, comments_counts = get_transpond_like_comment(html=html)
             times = get_time(html=html, starttime=starttime)
             comments_urlist = get_comments_urllist(html=html)
-            locations = get_islocation(html=html)
+            locations = get_islocation(html=html, headers=headers)
 
             useridlist = []
             for item in buseridlist:
