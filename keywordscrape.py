@@ -118,7 +118,7 @@ def get_time(html, starttime):
     return times
 
 def get_idlist(html):
-    buseridlist = re.findall('<div><a class="nk" href="http://weibo.cn/(.*?)">', html)
+    buseridlist = re.findall('<a class="nk" href="https://weibo.cn/(.*?)">', html)
     return buseridlist
 
 def get_transpond_like_comment(html):
@@ -155,7 +155,7 @@ def get_comments(url, headers):
 
 def get_comments_urllist(html):
     comments_urllist = []
-    bcomments_urllist = re.findall('<a href="http://weibo.cn/comment/(.*?)#cmtfrm" class="cc">评论', html)
+    bcomments_urllist = re.findall('<a href="https://weibo.cn/comment/(.*?)#cmtfrm" class="cc">评论', html)
     for it in bcomments_urllist:
         comments_urllist.append('https://weibo.cn/comment/' + it + '&page=')
     return comments_urllist
@@ -247,7 +247,8 @@ def download(keyword, starttime, endtime, cookievalue, cache):
             times = get_time(html=html, starttime=starttime)
             comments_urlist = get_comments_urllist(html=html)
             locations = get_islocation(html=html, headers=headers)
-
+            # for it in buseridlist:
+            #     print it
             useridlist = []
             for item in buseridlist:
                 if item[1] == '/':
