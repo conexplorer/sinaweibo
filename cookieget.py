@@ -48,7 +48,7 @@ def LoginWeibo(username, password):
             except Exception:
                 print u"登陆路径错误！"
             sub_info.click()
-            time.sleep(2)
+            time.sleep(9)
 
             # driver.get_cookies()类型list 仅包含一个元素cookie类型dict
             cookies_dict = driver.get_cookies()

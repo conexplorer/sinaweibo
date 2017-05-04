@@ -33,38 +33,45 @@ def main():
                 'Whitsunday+Islands', '圣灵岛', 'Hamilton+Island', '汉密尔顿岛', 'Lady+Musgrave+Island', 'Whitehaven+Beach', '白天堂沙滩',
                 'Airlie+Beach', '艾尔利海滩', 'Coral', '珊瑚', 'Gold+Coast', '黄金海岸', 'Magnetic+Island', '磁岛',
                 'Daydream+Island', '白日梦岛', 'Lady+Elliot+Island', '埃里奥特夫人岛', 'Heron+Island', 'Green+Island', '绿岛', 'Fitzroy+Island', '费兹罗岛']
-    keywords2 = ['Great+Barrier+Reef']
+
     bday = 0
     path = os.getcwd()
-    path += '\Diary.txt'
+    path += '\Diary.txt'    #日记文件用于记录数据爬取的起始点，和终止点，以便下次启动程序时继续爬取。
 
+    now_time = datetime.datetime.now()
     if os.path.exists(path):
         print "Diary.txt exist"
         with open('Diary.txt', 'r') as f:
-            bday = int(f.read())
+            bfday = f.read()
+            bday = int(bfday.split(' ')[0])
+            fday = int(bfday.split(' ')[1])
             f.close()
+    else:
+        print "Diary.txt don't exist"
+        fday = now_time.toordinal()
 
-    startup_time = datetime.datetime.now()
-    flag_time = datetime.datetime.now()
+    nowday = now_time.toordinal()
+
     while(1):
-        now_time = datetime.datetime.now()
-        if (now_time.day - flag_time.day) == 2:
-            flag_time = now_time + datetime.timedelta(days=-1)
-            update_time = flag_time.strftime('%Y%m%d')
-            print "更新昨天的微博数据：", update_time
+        updateday = nowday - fday
+        for i in range(1, updateday):
+            update_time = now_time + datetime.timedelta(days=-i)
+            updatetime = update_time.strftime('%Y%m%d')
+            print "从标记点开始更新微博数据：", updatetime
             for keyword in keywords:
-                keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=update_time, endtime=update_time)
-
-        yes_time = startup_time + datetime.timedelta(days=-bday)
+                keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=updatetime,
+                                          endtime=updatetime)
+        fday = nowday
+        yes_time = now_time + datetime.timedelta(days=-bday)
         starttime = yes_time.strftime('%Y%m%d')
         bday += 1
 
         with open('Diary.txt', 'w') as f:
-            f.write(str(bday))
+            f.write(str(bday) + ' ' + str(fday))
             f.close()
 
         print "日期：", starttime
-        for keyword in keywords2:
+        for keyword in keywords:
             keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=starttime, endtime=starttime)
 
 
