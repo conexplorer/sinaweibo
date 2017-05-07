@@ -12,12 +12,15 @@ import time
 from lxml import etree
 from selenium import webdriver
 import selenium.webdriver.support.ui as ui
+from pyvirtualdisplay import Display
 
 #获取cookie
 
 
 def LoginWeibo(username, password):
     N = 0
+    display = Display(visible=0, size=(1024, 768))
+    display.start()
     driver = webdriver.Firefox()
     wait = ui.WebDriverWait(driver, 10)
     cookies_dict = {}
