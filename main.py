@@ -14,7 +14,7 @@ import cookieget
 from pymongo import MongoClient
 import keywordscrape
 import os
-
+import platform
 
 def get_db():
     client = MongoClient('localhost', 27017)
@@ -36,8 +36,10 @@ def main():
 
     bday = 0
     path = os.getcwd()
-    path += '\Diary.txt'    #日记文件用于记录数据爬取的起始点，和终止点，以便下次启动程序时继续爬取。
-
+    if (platform.uname()[0] == 'Windows'):
+        path += '\Diary.txt'    #日记文件用于记录数据爬取的起始点，和终止点，以便下次启动程序时继续爬取。
+    else:
+        path += '/Diary.txt'
     now_time = datetime.datetime.now()
     if os.path.exists(path):
         print "Diary.txt exist"
@@ -54,13 +56,15 @@ def main():
 
     while(1):
         updateday = nowday - fday
-        for i in range(1, updateday):
-            update_time = now_time + datetime.timedelta(days=-i)
-            updatetime = update_time.strftime('%Y%m%d')
-            print "从标记点开始更新微博数据：", updatetime
-            for keyword in keywords:
-                keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=updatetime,
-                                          endtime=updatetime)
+        if (updateday > 1)
+            for i in range(1, updateday):
+                update_time = now_time + datetime.timedelta(days=-i)
+                updatetime = update_time.strftime('%Y%m%d')
+                print "从标记点开始更新微博数据：", updatetime
+                for keyword in keywords:
+                    keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=updatetime,
+                                              endtime=updatetime)
+            print "更新微博数据完毕！"
         fday = nowday
         yes_time = now_time + datetime.timedelta(days=-bday)
         starttime = yes_time.strftime('%Y%m%d')
