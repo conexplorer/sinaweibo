@@ -56,7 +56,7 @@ def main():
 
     while(1):
         updateday = nowday - fday
-        if (updateday > 1)：
+        if (updateday > 1):
             for i in range(1, updateday):
                 update_time = now_time + datetime.timedelta(days=-i)
                 updatetime = update_time.strftime('%Y%m%d')
