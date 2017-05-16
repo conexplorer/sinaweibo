@@ -247,8 +247,6 @@ def download(keyword, starttime, endtime, cookievalue, cache):
             times = get_time(html=html, starttime=starttime)
             comments_urlist = get_comments_urllist(html=html)
             locations = get_islocation(html=html, headers=headers)
-            # for it in buseridlist:
-            #     print it
             useridlist = []
             for item in buseridlist:
                 if item[1] == '/':
@@ -271,12 +269,7 @@ def download(keyword, starttime, endtime, cookievalue, cache):
                     print "    评论爬取完成"
                 else:
                     comments = 'NONE'
-                # for loc in islocations:
-                #     print loc
-                # if islocations[i] == '显示地图':
-                #     location = text.split(' ')[-2]
-                # else:
-                #     location = 'NONE'
+
                 try:
                     post = {'text': text, 'reposts_count': transpond, 'likes_count': like, 'comments_count': comments_count, 'comments': comments, 'location': location, 'date': time1, 'userinfo': userinfo}
                     cache.insert(post)
