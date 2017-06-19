@@ -24,8 +24,8 @@ def get_db():
 def main():
     db = get_db()
 
-    username = '15137882216'
-    password = 'ldiony42'
+    username = ''
+    password = ''
 
     cookie = ''
     cookie = cookieget.LoginWeibo(username=username, password=password)
