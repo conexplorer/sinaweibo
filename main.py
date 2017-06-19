@@ -68,7 +68,9 @@ def main():
             fday = nowday
         yes_time = now_time + datetime.timedelta(days=-bday)
         starttime = yes_time.strftime('%Y%m%d')
+
         bday += 1
+        nowday += 1
 
         with open('Diary.txt', 'w') as f:
             f.write(str(bday) + ' ' + str(fday))
