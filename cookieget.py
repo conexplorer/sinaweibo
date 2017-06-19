@@ -19,8 +19,8 @@ from pyvirtualdisplay import Display
 
 def LoginWeibo(username, password):
     N = 0
-    display = Display(visible=0, size=(1024, 768))
-    display.start()
+    # display = Display(visible=0, size=(1024, 768))
+    # display.start()
     driver = webdriver.Firefox()
     wait = ui.WebDriverWait(driver, 10)
     cookies_dict = {}

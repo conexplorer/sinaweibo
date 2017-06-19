@@ -24,8 +24,8 @@ def get_db():
 def main():
     db = get_db()
 
-    username = ''
-    password = ''
+    username = '15137882216'
+    password = 'ldiony42'
 
     cookie = ''
     cookie = cookieget.LoginWeibo(username=username, password=password)
@@ -65,7 +65,7 @@ def main():
                     keywordscrape.startscrape(cookie=cookie, db=db, keyword=keyword, starttime=updatetime,
                                               endtime=updatetime)
             print "更新微博数据完毕！"
-        fday = nowday
+            fday = nowday
         yes_time = now_time + datetime.timedelta(days=-bday)
         starttime = yes_time.strftime('%Y%m%d')
         bday += 1
